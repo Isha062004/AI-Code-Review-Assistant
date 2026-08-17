@@ -9,7 +9,8 @@ import PRReviewer from './components/PRReviewer';
 import AIDebuggerChat from './components/AIDebuggerChat';
 import AuditHistoryView from './components/AuditHistoryView';
 
-const API_BASE = 'http://localhost:8000';
+// Dynamic API Base URL resolution for local, LAN (Wi-Fi), and Cloud deployment
+const API_BASE = import.meta.env.VITE_API_URL || `${window.location.protocol}//${window.location.hostname}:8000`;
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('studio');
