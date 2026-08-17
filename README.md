@@ -10,11 +10,12 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Pytest](https://img.shields.io/badge/Pytest-8%2F8%20Passed-success.svg?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Cross-Device](https://img.shields.io/badge/Device-Universal-indigo.svg?style=for-the-badge&logo=android&logoColor=white)](README.md)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
 ---
 
-[Key Features](#-key-features) • [System Architecture](#-system-architecture) • [API Specification](#-api-specification) • [Quick Start](#-quick-start) • [Docker Deployment](#-docker-deployment) • [Database Schema](#-database-schema)
+[Key Features](#-key-features) • [Code Optimization Showcase](#-code-optimization-showcase) • [System Architecture](#-system-architecture) • [API Specification](#-api-specification) • [Quick Start](#-quick-start) • [Docker Deployment](#-docker-deployment) • [Database Schema](#-database-schema)
 
 </div>
 
@@ -64,6 +65,47 @@ Combining Python AST parsing with LLM optimization routines, the platform proces
 
 ---
 
+## 💡 Code Optimization Showcase
+
+### Unoptimized Code ($O(2^N)$ Exponential Fibonacci & $N+1$ Database Query Anti-Pattern)
+
+```python
+# Unoptimized Recursive Fibonacci - Time Complexity: O(2^N)
+def fibonacci_recursive(n):
+    if n <= 1:
+        return n
+    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+
+# N+1 Database Query Anti-pattern inside iteration loop
+def fetch_user_orders(db, user_list):
+    results = []
+    for user in user_list:
+        orders = db.query("SELECT * FROM orders WHERE user_id = " + str(user.id))
+        results.append(orders)
+    return results
+```
+
+### AI-Refactored & Optimized Code ($O(N)$ Iterative & Batch Query Solution)
+
+```python
+from functools import lru_cache
+
+# Optimized with Memoization / Iterative Dynamic Programming - Time Complexity: O(N)
+@lru_cache(maxsize=None)
+def fibonacci_recursive(n: int) -> int:
+    if n <= 1:
+        return n
+    return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
+
+# Optimized Batch SQL Query - Reduced from O(N) database roundtrips to O(1)
+def fetch_user_orders(db, user_list):
+    user_ids = [user.id for user in user_list]
+    orders_by_user = db.query("SELECT * FROM orders WHERE user_id IN :ids", ids=tuple(user_ids))
+    return orders_by_user
+```
+
+---
+
 ## 🏗️ System Architecture
 
 ```mermaid
@@ -92,7 +134,17 @@ graph TD
 | **Analysis & Math** | Python `ast`, Math / Logarithmic Halstead Volume Formulas |
 | **Database** | PostgreSQL 15 (Production) / SQLite3 (Local Fallback) |
 | **Testing** | Pytest 8.1, FastAPI TestClient, AsyncIO |
-| **Containerization** | Docker, Docker Compose |
+| **Containerization** | Docker, Docker Compose, Nginx |
+
+---
+
+## 🌐 Universal Cross-Device Access
+
+The application binds to `0.0.0.0` with dynamic host detection so it can be accessed from any device on your local network or cloud host:
+
+- 💻 **Desktop / Laptop**: `http://localhost:5173`
+- 📱 **Smartphones & Tablets (Wi-Fi / LAN)**: `http://<YOUR_LOCAL_IP>:5175`
+- ⚡ **Backend API**: `http://localhost:8000/docs`
 
 ---
 
@@ -117,10 +169,8 @@ source venv/bin/activate
 
 # Install dependencies & launch server
 pip install -r requirements.txt
-python -m uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
-- **API Base URL**: `http://localhost:8000`
-- **Swagger OpenAPI Docs**: `http://localhost:8000/docs`
 
 ### 2. Frontend Setup
 
@@ -131,7 +181,6 @@ cd frontend
 npm install
 npm run dev
 ```
-- **Frontend Web Interface**: `http://localhost:5173`
 
 ---
 
@@ -180,27 +229,6 @@ python -m pytest tests/test_api.py
 
 ---
 
-## 🗄️ Database Schema Overview
-
-```
-                        +----------------------+
-                        |    code_analyses     |
-                        +----------------------+
-                        | id (PK)              |
-                        | filename             |
-                        | language             |
-                        | code_content         |
-                        | cyclomatic_complexity|
-                        | bugs_detected (JSON) |
-                        | code_smells (JSON)   |
-                        | security_vuln (JSON) |
-                        | ast_summary (JSON)   |
-                        | created_at           |
-                        +----------------------+
-```
-
----
-
 ## 📄 License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
@@ -208,5 +236,5 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 ---
 
 <div align="center">
-  <sub>Developed with ❤️ for software engineering teams.</sub>
+  <sub>Developed with ❤️ for software engineering teams worldwide.</sub>
 </div>
